@@ -5,6 +5,8 @@ import logging
 
 logging.basicConfig(level=logging.WARNING)
 
+DATASET = "studio"
+
 
 async def main() -> None:
     # WRITE phase - memories an agent would log during real work
@@ -21,19 +23,19 @@ async def main() -> None:
         "before any work item can move to Done, and founder approval before deploy.",
     ]
     for m in memories:
-        await cognee.add(m)
+        await cognee.add(m, dataset_name=DATASET)
     print("added", len(memories), "memories")
 
-    await cognee.cognify()
+    await cognee.cognify(datasets=[DATASET])
     print("cognified")
 
     # RECALL phase - what a different agent in a different session would do
-    results = await cognee.search("What did the review find about esbuild and picomatch?")
+    results = await cognee.search("What did the review find about esbuild and picomatch?", datasets=[DATASET])
     print("--- search 1 (snyk findings) ---")
     for r in results[:3]:
         print(" ", str(r)[:150])
 
-    results = await cognee.search("What database and auth does lexis use?")
+    results = await cognee.search("What database and auth does lexis use?", datasets=[DATASET])
     print("--- search 2 (stack facts) ---")
     for r in results[:3]:
         print(" ", str(r)[:150])
